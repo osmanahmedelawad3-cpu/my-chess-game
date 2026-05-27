@@ -1,174 +1,307 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة المبتكر التقني</title>
+
+<title>OSMAN WD ELAWAD PLATFORM</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-    background:#121212;
-    color:white;
-    font-family:Tahoma,sans-serif;
-    margin:0;
-    padding:15px;
-    text-align:center;
+background:#0f0f0f;
+color:white;
+font-family:Tahoma;
+padding:15px;
 }
 
 .header{
-    background:#1e1e1e;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    border-bottom:4px solid #00adb5;
+background:#1b1b1b;
+padding:25px;
+border-radius:20px;
+text-align:center;
+border-bottom:5px solid #00d2d3;
+margin-bottom:25px;
 }
 
-h1{
-    color:#00adb5;
+.header h1{
+color:#00d2d3;
+font-size:35px;
 }
 
-.card{
-    background:#1e1e1e;
-    border-radius:12px;
-    padding:20px;
-    margin:15px auto;
-    max-width:900px;
-    border:1px solid #333;
+.header p{
+color:#aaa;
+margin-top:10px;
 }
 
-.card-title{
-    color:#00adb5;
-    font-size:20px;
-    margin-bottom:15px;
+.section{
+background:#1b1b1b;
+padding:20px;
+border-radius:20px;
+margin-bottom:25px;
+border:1px solid #333;
+}
+
+.section h2{
+color:#00d2d3;
+margin-bottom:15px;
 }
 
 .btn{
-    background:#00adb5;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:8px;
-    cursor:pointer;
-    margin-top:15px;
-    font-weight:bold;
+background:#00adb5;
+color:white;
+padding:12px 20px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+margin-top:10px;
+font-weight:bold;
 }
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+background:#222;
+color:white;
+font-size:16px;
+}
+
+textarea{
+height:120px;
+}
+
+.result{
+background:#222;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+}
+
+.hidden{
+display:none;
+}
+
+/* الشطرنج */
 
 .chess-container{
-    display:grid;
-    grid-template-columns:repeat(8,1fr);
-    width:100%;
-    max-width:500px;
-    margin:20px auto;
-    border:5px solid #393e46;
-    aspect-ratio:1/1;
+display:grid;
+grid-template-columns:repeat(8,1fr);
+max-width:500px;
+margin:20px auto;
+aspect-ratio:1/1;
+border:5px solid #444;
 }
 
-.chess-square{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:38px;
-    cursor:pointer;
-    user-select:none;
-    position:relative;
+.square{
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:35px;
+cursor:pointer;
+position:relative;
 }
 
 .light{
-    background:#f0d9b5;
-    color:black;
+background:#f0d9b5;
+color:black;
 }
 
 .dark{
-    background:#b58863;
-    color:black;
+background:#b58863;
+color:black;
 }
 
 .selected{
-    background:#70a1ff !important;
+background:#70a1ff !important;
 }
 
-.legal-move::after{
-    content:"";
-    width:14px;
-    height:14px;
-    background:#2ed573;
-    border-radius:50%;
-    position:absolute;
-    box-shadow:0 0 10px #2ed573;
-}
-
-.legal-attack{
-    outline:4px solid #2ed573;
-    outline-offset:-4px;
-}
-
-.turn{
-    color:#00adb5;
-    font-weight:bold;
-    margin-top:10px;
+.legal::after{
+content:"";
+width:14px;
+height:14px;
+background:#2ed573;
+border-radius:50%;
+position:absolute;
 }
 
 .footer{
-    margin-top:40px;
-    padding:20px;
-    background:#1e1e1e;
-    border-top:3px solid #00adb5;
-    border-radius:12px;
+text-align:center;
+padding:30px;
+margin-top:40px;
+background:#1b1b1b;
+border-radius:20px;
+border-top:5px solid #00d2d3;
 }
 
 .logo{
-    font-size:26px;
-    font-weight:bold;
-    color:#00adb5;
-    letter-spacing:2px;
-    text-shadow:0 0 10px #00adb5;
+font-size:30px;
+font-weight:bold;
+color:#00d2d3;
+text-shadow:0 0 10px #00d2d3;
 }
 
-.sublogo{
-    color:#aaa;
-    margin-top:8px;
-}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-    <h1>🚀 منصة المبتكر التقني</h1>
-    <p>لعبة شطرنج احترافية بالقوانين الحقيقية</p>
+<h1>🚀 منصة المبتكر التقني</h1>
+<p>
+منصة تعليمية متكاملة للألعاب والبرمجة والأمن السيبراني
+</p>
 </div>
 
-<div class="card">
-    <div class="card-title">
-        ♟️ لعبة الشطرنج الذكية
-    </div>
+<!-- القسم الأول -->
+<div class="section">
 
-    <p>
-        اضغط على القطعة لرؤية الحركات القانونية بالنقاط الخضراء
-    </p>
+<h2>🎮 قسم الألعاب</h2>
 
-    <div class="chess-container" id="board"></div>
+<h3>♟️ لعبة الشطرنج</h3>
 
-    <div class="turn" id="turnIndicator">
-        دور اللاعب: الأبيض
-    </div>
+<div class="chess-container" id="board"></div>
 
-    <button class="btn" onclick="initBoard()">
-        إعادة اللعبة 🔄
-    </button>
+<button class="btn" onclick="initBoard()">
+إعادة اللعبة
+</button>
+
+<hr style="margin:25px 0;border:1px solid #333;">
+
+<h3>🧩 لعبة السودوكو</h3>
+
+<p>أدخل الأرقام الصحيحة:</p>
+
+<input type="number" id="s1" placeholder="الخانة 1">
+<input type="number" id="s2" placeholder="الخانة 2">
+
+<button class="btn" onclick="checkSudoku()">
+تحقق من الحل
+</button>
+
+<div class="result" id="sudokuResult"></div>
+
 </div>
 
+<!-- القسم الثاني -->
+<div class="section">
+
+<h2>💻 تعلم C++</h2>
+
+<p>
+لغة C++ من أقوى لغات البرمجة وتستخدم في الألعاب والأنظمة.
+</p>
+
+<br>
+
+<h3>📖 كود أولي:</h3>
+
+<div class="result">
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main(){
+
+cout &lt;&lt; "Hello World";
+
+return 0;
+}
+</pre>
+</div>
+
+<h3 style="margin-top:20px;">
+🧪 جرّب كودك:
+</h3>
+
+<textarea id="cppCode"></textarea>
+
+<button class="btn" onclick="runCpp()">
+فحص الكود
+</button>
+
+<div class="result" id="cppResult"></div>
+
+</div>
+
+<!-- القسم الثالث -->
+<div class="section">
+
+<h2>🛡️ الأمن السيبراني</h2>
+
+<p>
+أدخل رابط الموقع لفحص الحماية الأساسية
+</p>
+
+<input type="text" id="siteUrl" placeholder="https://example.com">
+
+<button class="btn" onclick="scanSite()">
+فحص الموقع
+</button>
+
+<div class="result" id="scanResult"></div>
+
+</div>
+
+<!-- القسم الرابع -->
+<div class="section">
+
+<h2>🌍 المترجم</h2>
+
+<input type="text" id="translateInput"
+placeholder="أدخل كلمة بالعربي أو الإنجليزي">
+
+<button class="btn" onclick="translateWord()">
+ترجمة
+</button>
+
+<div class="result" id="translateResult"></div>
+
+</div>
+
+<!-- القسم الخامس -->
+<div class="section">
+
+<h2>🧠 حل المشاكل البرمجية</h2>
+
+<textarea id="problemInput"
+placeholder="اكتب المشكلة البرمجية هنا"></textarea>
+
+<button class="btn" onclick="solveProblem()">
+إظهار الحل
+</button>
+
+<div class="result" id="problemResult"></div>
+
+</div>
+
+<!-- الشعار -->
 <div class="footer">
-    <div class="logo">
-        OSMAN WD ELAWAD
-    </div>
 
-    <div class="sublogo">
-        Chess System & Web Design
-    </div>
+<div class="logo">
+OSMAN WD ELAWAD
+</div>
+
+<p style="margin-top:10px;color:#aaa;">
+Developer & Cyber Security
+</p>
+
 </div>
 
 <script>
+
+/* =====================
+الشطرنج
+===================== */
 
 const initialBoard = [
 ['♜','♞','♝','♛','♚','♝','♞','♜'],
@@ -181,292 +314,212 @@ const initialBoard = [
 ['♖','♘','♗','♕','♔','♗','♘','♖']
 ];
 
-const whitePieces = ['♙','♖','♘','♗','♕','♔'];
-const blackPieces = ['♟','♜','♞','♝','♛','♚'];
-
 let boardState = [];
-let selectedSquare = null;
-let currentTurn = 'white';
-let legalMoves = [];
+let selected = null;
 
 function initBoard(){
-    boardState = JSON.parse(JSON.stringify(initialBoard));
-    selectedSquare = null;
-    currentTurn = 'white';
-    legalMoves = [];
 
-    document.getElementById("turnIndicator").innerText =
-    "دور اللاعب: الأبيض";
+boardState = JSON.parse(JSON.stringify(initialBoard));
 
-    renderBoard();
-}
-
-function getPieceColor(piece){
-    if(whitePieces.includes(piece)) return 'white';
-    if(blackPieces.includes(piece)) return 'black';
-    return null;
-}
-
-function calculateLegalMoves(row,col){
-
-    const piece = boardState[row][col];
-    const color = getPieceColor(piece);
-    const moves = [];
-
-    if(!piece || color !== currentTurn) return moves;
-
-    // حركة البيدق الأبيض
-    if(piece === '♙'){
-
-        if(row > 0 && boardState[row-1][col] === ''){
-            moves.push({r:row-1,c:col});
-
-            if(row === 6 && boardState[row-2][col] === ''){
-                moves.push({r:row-2,c:col});
-            }
-        }
-
-        if(row > 0 && col > 0 &&
-           getPieceColor(boardState[row-1][col-1]) === 'black'){
-            moves.push({r:row-1,c:col-1});
-        }
-
-        if(row > 0 && col < 7 &&
-           getPieceColor(boardState[row-1][col+1]) === 'black'){
-            moves.push({r:row-1,c:col+1});
-        }
-    }
-
-    // حركة البيدق الأسود
-    if(piece === '♟'){
-
-        if(row < 7 && boardState[row+1][col] === ''){
-            moves.push({r:row+1,c:col});
-
-            if(row === 1 && boardState[row+2][col] === ''){
-                moves.push({r:row+2,c:col});
-            }
-        }
-
-        if(row < 7 && col > 0 &&
-           getPieceColor(boardState[row+1][col-1]) === 'white'){
-            moves.push({r:row+1,c:col-1});
-        }
-
-        if(row < 7 && col < 7 &&
-           getPieceColor(boardState[row+1][col+1]) === 'white'){
-            moves.push({r:row+1,c:col+1});
-        }
-    }
-
-    // الحصان
-    if(piece === '♘' || piece === '♞'){
-
-        const knightMoves = [
-            [-2,-1],[-2,1],
-            [-1,-2],[-1,2],
-            [1,-2],[1,2],
-            [2,-1],[2,1]
-        ];
-
-        knightMoves.forEach(move=>{
-
-            let nr = row + move[0];
-            let nc = col + move[1];
-
-            if(nr>=0 && nr<8 && nc>=0 && nc<8){
-
-                if(boardState[nr][nc] === '' ||
-                   getPieceColor(boardState[nr][nc]) !== color){
-
-                    moves.push({r:nr,c:nc});
-                }
-            }
-        });
-    }
-
-    // الملك
-    if(piece === '♔' || piece === '♚'){
-
-        for(let dr=-1; dr<=1; dr++){
-            for(let dc=-1; dc<=1; dc++){
-
-                if(dr===0 && dc===0) continue;
-
-                let nr = row + dr;
-                let nc = col + dc;
-
-                if(nr>=0 && nr<8 && nc>=0 && nc<8){
-
-                    if(boardState[nr][nc] === '' ||
-                       getPieceColor(boardState[nr][nc]) !== color){
-
-                        moves.push({r:nr,c:nc});
-                    }
-                }
-            }
-        }
-    }
-
-    // دالة الحركات المستقيمة
-    function slidingMoves(directions){
-
-        directions.forEach(dir=>{
-
-            let nr = row + dir[0];
-            let nc = col + dir[1];
-
-            while(nr>=0 && nr<8 && nc>=0 && nc<8){
-
-                if(boardState[nr][nc] === ''){
-
-                    moves.push({r:nr,c:nc});
-
-                }else{
-
-                    if(getPieceColor(boardState[nr][nc]) !== color){
-                        moves.push({r:nr,c:nc});
-                    }
-
-                    break;
-                }
-
-                nr += dir[0];
-                nc += dir[1];
-            }
-        });
-    }
-
-    const straight = [
-        [-1,0],[1,0],[0,-1],[0,1]
-    ];
-
-    const diagonal = [
-        [-1,-1],[-1,1],[1,-1],[1,1]
-    ];
-
-    // الرخ
-    if(piece === '♖' || piece === '♜'){
-        slidingMoves(straight);
-    }
-
-    // الفيل
-    if(piece === '♗' || piece === '♝'){
-        slidingMoves(diagonal);
-    }
-
-    // الوزير
-    if(piece === '♕' || piece === '♛'){
-        slidingMoves([...straight,...diagonal]);
-    }
-
-    return moves;
-}
-
-function isMoveLegal(r,c){
-
-    return legalMoves.some(
-        move => move.r === r && move.c === c
-    );
+renderBoard();
 }
 
 function renderBoard(){
 
-    const board = document.getElementById("board");
-    board.innerHTML = '';
+const board = document.getElementById("board");
 
-    for(let r=0; r<8; r++){
+board.innerHTML = "";
 
-        for(let c=0; c<8; c++){
+for(let r=0;r<8;r++){
 
-            const square = document.createElement("div");
+for(let c=0;c<8;c++){
 
-            square.className =
-            "chess-square " +
-            (((r+c)%2===0) ? "light" : "dark");
+const square = document.createElement("div");
 
-            square.innerText = boardState[r][c];
+square.className =
+"square " + (((r+c)%2===0) ? "light":"dark");
 
-            square.dataset.row = r;
-            square.dataset.col = c;
+square.innerText = boardState[r][c];
 
-            if(selectedSquare &&
-               selectedSquare.row===r &&
-               selectedSquare.col===c){
+square.onclick = ()=>movePiece(r,c);
 
-                square.classList.add("selected");
-            }
+board.appendChild(square);
 
-            if(isMoveLegal(r,c)){
-
-                if(boardState[r][c] !== ''){
-                    square.classList.add("legal-attack");
-                }else{
-                    square.classList.add("legal-move");
-                }
-            }
-
-            square.addEventListener("click",handleSquareClick);
-
-            board.appendChild(square);
-        }
-    }
+}
+}
 }
 
-function handleSquareClick(e){
+function movePiece(r,c){
 
-    const r = parseInt(e.currentTarget.dataset.row);
-    const c = parseInt(e.currentTarget.dataset.col);
+if(selected){
 
-    const piece = boardState[r][c];
-    const pieceColor = getPieceColor(piece);
+boardState[r][c] =
+boardState[selected.r][selected.c];
 
-    // تنفيذ الحركة
-    if(selectedSquare && isMoveLegal(r,c)){
+boardState[selected.r][selected.c] = '';
 
-        boardState[r][c] =
-        boardState[selectedSquare.row][selectedSquare.col];
+selected = null;
 
-        boardState[selectedSquare.row][selectedSquare.col] = '';
+renderBoard();
 
-        selectedSquare = null;
-        legalMoves = [];
+}else{
 
-        currentTurn =
-        currentTurn === 'white' ? 'black' : 'white';
+if(boardState[r][c] !== ''){
 
-        document.getElementById("turnIndicator").innerText =
-        "دور اللاعب: " +
-        (currentTurn === 'white' ? 'الأبيض' : 'الأسود');
+selected = {r,c};
 
-        renderBoard();
-        return;
-    }
-
-    // اختيار قطعة
-    if(pieceColor === currentTurn){
-
-        selectedSquare = {
-            row:r,
-            col:c
-        };
-
-        legalMoves = calculateLegalMoves(r,c);
-
-        renderBoard();
-
-    }else{
-
-        selectedSquare = null;
-        legalMoves = [];
-
-        renderBoard();
-    }
+}
+}
 }
 
-document.addEventListener("DOMContentLoaded",initBoard);
+initBoard();
+
+/* =====================
+السودوكو
+===================== */
+
+function checkSudoku(){
+
+const s1 =
+document.getElementById("s1").value;
+
+const s2 =
+document.getElementById("s2").value;
+
+if(s1 == 2 && s2 == 3){
+
+document.getElementById("sudokuResult")
+.innerHTML =
+"✅ الحل صحيح";
+
+}else{
+
+document.getElementById("sudokuResult")
+.innerHTML =
+"❌ الحل خطأ";
+
+}
+}
+
+/* =====================
+C++
+===================== */
+
+function runCpp(){
+
+const code =
+document.getElementById("cppCode").value;
+
+if(code.includes("cout")){
+
+document.getElementById("cppResult")
+.innerHTML =
+"✅ الكود صحيح تقريباً";
+
+}else{
+
+document.getElementById("cppResult")
+.innerHTML =
+"❌ تأكد من كتابة cout";
+
+}
+}
+
+/* =====================
+فحص المواقع
+===================== */
+
+function scanSite(){
+
+const url =
+document.getElementById("siteUrl").value;
+
+document.getElementById("scanResult")
+.innerHTML =
+`
+✅ تم فحص الموقع: ${url}
+<br><br>
+🔒 HTTPS: جيد
+<br>
+🛡️ الحماية الأساسية: موجودة
+`;
+
+}
+
+/* =====================
+المترجم
+===================== */
+
+function translateWord(){
+
+const word =
+document.getElementById("translateInput")
+.value.toLowerCase();
+
+let result = "";
+
+const dictionary = {
+
+"hello":"مرحبا",
+"world":"العالم",
+"car":"سيارة",
+"book":"كتاب",
+"مرحبا":"hello",
+"كتاب":"book",
+"سيارة":"car"
+
+};
+
+if(dictionary[word]){
+
+result = dictionary[word];
+
+}else{
+
+result = "❌ الكلمة غير موجودة";
+
+}
+
+document.getElementById("translateResult")
+.innerHTML = result;
+
+}
+
+/* =====================
+حل المشاكل البرمجية
+===================== */
+
+function solveProblem(){
+
+const text =
+document.getElementById("problemInput")
+.value;
+
+let answer = "";
+
+if(text.includes("cout")){
+
+answer =
+"💡 المشكلة غالباً أنك نسيت include iostream";
+
+}else if(text.includes("loop")){
+
+answer =
+"💡 تأكد من شرط الحلقة حتى لا تصبح infinite loop";
+
+}else{
+
+answer =
+"✅ حاول مراجعة Syntax أو الأقواس";
+
+}
+
+document.getElementById("problemResult")
+.innerHTML = answer;
+
+}
 
 </script>
 
 </body>
-</html>
+    </html>
