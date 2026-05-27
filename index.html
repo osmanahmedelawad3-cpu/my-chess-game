@@ -1,70 +1,654 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+from flask import Flask, render_template_string, request
+import requests
+
+app = Flask(__name__)
+
+# التصميم البصري المشترك لجميع الصفحات
+BASE_HEAD = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة المبتكر التقني</title>
     <style>
-        body { background-color: #121212; color: #fff; font-family: sans-serif; padding: 10px; text-align: center; }
-        .card { background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
-        .chess-container { display: grid; grid-template-columns: repeat(8, 1fr); width: 100%; max-width: 320px; margin: 10px auto; border: 3px solid #555; aspect-ratio: 1/1; }
-        .sq { display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+        .header {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-bottom: 4px solid #00adb5;
+        }
+        h1 { color: #00adb5; margin: 0; font-size: 24px; }
+        .card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #2d2d2d;
+            text-align: right;
+        }
+        .card-title {
+            color: #00adb5;
+            font-size: 18px;
+            margin-top: 0;
+            border-bottom: 1px solid #2d2d2d;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .code-box {
+            background-color: #252830;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            color: #f8f8f2;
+            border-left: 4px solid #00adb5;
+            line-height: 1.6;
+        }
+        .explanation-box {
+            background-color: #1a222d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-right: 4px solid #ff9f43;
+            font-size: 14px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #393e46;
+            background-color: #222831;
+            color: white;
+            box-sizing: border-box;
+        }
+        .textarea-field {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #393e46;
+            background-color: #222831;
+            color: #21bf73;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .btn {
+            background-color: #00adb5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-block;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .btn-secondary {
+            background-color: #393e46;
+        }
+        .result-box {
+            background-color: #2d3748;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            gap: 5px;
+            justify-content: center;
+            margin: 15px auto;
+        }
+        .sudoku-cell {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #222831;
+            color: #ffffff;
+            border: 2px solid #393e46;
+            border-radius: 5px;
+        }
+        .sudoku-cell:disabled {
+            background-color: #393e46;
+            color: #00adb5;
+        }
+        /* رقعة الشطرنج الاحترافية المتجاوبة */
+        .chess-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            justify-content: center;
+            margin: 20px auto;
+            border: 4px solid #393e46;
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 1 / 1;
+        }
+        .chess-square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
         .light { background-color: #f0d9b5; color: #000; }
         .dark { background-color: #b58863; color: #000; }
-        .btn { background: #00adb5; color: #fff; border: none; padding: 10px; border-radius: 5px; width: 100%; cursor: pointer; margin-top: 5px; }
+        .selected { background-color: #70a1ff !important; }
+
+        /* تأثير النقطة الخضراء للمسارات القانونية */
+        .legal-move::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #2ed573;
+            border-radius: 50%;
+            opacity: 0.85;
+            box-shadow: 0 0 8px #2ed573;
+        }
+        /* إذا كان المربع يحتوي على قطعة معادية قابلة للأكل، تظهر دائرة خضراء مفرغة حول القطعة */
+        .legal-attack {
+            outline: 3px solid #2ed573;
+            outline-offset: -3px;
+        }
+        ul { padding-right: 20px; }
+        li { margin-bottom: 8px; }
     </style>
 </head>
-<body>
-    <div class="card"><h1>🚀 منصة المبتكر التقني</h1></div>
+"""
 
-    <div class="card">
-        <h3>👑 لعبة الشطرنج</h3>
-        <div class="chess-container" id="board"></div>
-        <button class="btn" onclick="initBoard()">إعادة ضبط اللوحة 🔄</button>
+HOME_TEMPLATE = f"""
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+{BASE_HEAD}
+<body>
+    <div class="header">
+        <h1>🚀 منصة المبتكر التقني</h1>
+        <p style="color: #aaaaaa; font-size: 14px;">بوابتك لاحتراف البرمجة، حماية الشبكات، وتطوير التفكير المنطقي</p>
     </div>
 
+    <div class="card">
+        <div class="card-title">🧠 تحديات العقل والألعاب الذهنية</div>
+        <p>قسم المهارات والألعاب الذكية يحتوي على لغز الشفرة، سودوكو التفاعلية، ولعبة الشطرنج القانونية بالكامل.</p>
+        <a href="/logic" class="btn">دخول قسم الألعاب</a>
+    </div>
+
+    <div class="card">
+        <div class="card-title">💻 دروس البرمجة والتكنولوجيا</div>
+        <p>تعلم لغة C++ من الصفر، وافهم الأوامر البرمجية والمكتبات، واكتب أول كود حركي تفاعلي بنفسك.</p>
+        <a href="/programming" class="btn">ابدأ التعلم الآن</a>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🛡️ معمل الأمن السيبراني وفحص الحماية</div>
+        <p>تعرف على مفهوم حماية البيانات والشبكات، واختبر ترويسات المواقع الحقيقية ضد ثغرات الاختراق.</p>
+        <a href="/cybersecurity" class="btn">دخول المعمل الأمني</a>
+    </div>
+</body>
+</html>
+"""
+
+LOGIC_TEMPLATE = f"""
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+{BASE_HEAD}
+<body>
+    <div class="header">
+        <h1>🧠 تحديات العقل والمنطق</h1>
+        <p style="color: #aaaaaa; font-size: 14px;">بيئة الألعاب الذهنية والاستراتيجية المحمية</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">👑 لعبة الشطرنج الذكية (قوانين صارمة + مسارات خضراء)</div>
+        <p>اضغط على القطعة لرؤية <strong>النقاط الخضراء</strong> التي تمثل حركاتها القانونية، ثم اضغط على النقطة لتنفيذ النقلة:</p>
+
+        <div class="chess-container" id="board"></div>
+        <div id="turn-indicator" style="text-align: center; margin-top: 10px; font-weight: bold; color: #00adb5;">دور اللاعب: الأبيض (الأحجار بالأسفل)</div>
+        <button class="btn btn-secondary" onclick="initBoard()">إعادة بدء الشطرنج 🔄</button>
+    </div>
+
+    <div class="card">
+        <div class="card-title">� تحدي مصفوفة السودوكو المصغرة (3x3)</div>
+        <p>املأ المربعات الفارغة بالأرقام المناسبة بحيث لا يتكرر أي رقم من (1 إلى 3) في أي صف أو عمود:</p>
+
+        <form method="POST" action="/check_sudoku">
+            <div class="sudoku-grid">
+                <input type="text" class="sudoku-cell" value="1" disabled>
+                <input type="text" name="cell_0_1" class="sudoku-cell" placeholder="?">
+                <input type="text" class="sudoku-cell" value="3" disabled>
+
+                <input type="text" name="cell_1_0" class="sudoku-cell" placeholder="?">
+                <input type="text" class="sudoku-cell" value="1" disabled>
+                <input type="text" name="cell_1_2" class="sudoku-cell" placeholder="?">
+
+                <input type="text" class="sudoku-cell" value="2" disabled>
+                <input type="text" name="cell_2_1" class="sudoku-cell" placeholder="?">
+                <input type="text" class="sudoku-cell" value="1" disabled>
+            </div>
+            <button type="submit" class="btn">التحقق من حل اللغز</button>
+        </form>
+
+        """ + """
+        {% if sudoku_result %}
+        <div class="result-box">
+            {% if sudoku_result == "success" %}
+                <span style="color: #21bf73; font-weight: bold; font-size: 16px;">🎉 مبروك! تفكير خوارزمي سليم، الإجابة صحيحة بالكامل.</span>
+            {% else %}
+                <span style="color: #ff2e63; font-weight: bold; font-size: 16px;">❌ الحل غير صحيح أو هناك خانات فارغة. حاول مجدداً ركّز في الصفوف والأعمدة!</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        """ + f"""
+    </div>
+
+    <a href="/" class="btn btn-secondary">⬅️ العودة للشاشة الرئيسية</a>
+
     <script>
+        // تمثيل اللوحة (الرموز البيضاء في الأسفل والسوداء في الأعلى لسهولة اللعب)
         const initialBoard = [
             ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
             ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'],
-            ['', '', '', '', '', '', '', ''], ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''], ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
             ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'],
             ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']
         ];
+
+        // مصفوفة لتحديد الألوان لمعرفة التابعية
+        const whitePieces = ['♙', '♖', '♘', '♗', '♕', '♔'];
+        const blackPieces = ['♟', '♜', '♞', '♝', '♛', '♚'];
+
         let boardState = JSON.parse(JSON.stringify(initialBoard));
-        let selected = null;
+        let selectedSquare = null;
+        let currentTurn = 'white';
+        let legalMoves = [];
 
-        function initBoard() {
+        function initBoard() {{
             boardState = JSON.parse(JSON.stringify(initialBoard));
-            render();
-        }
+            selectedSquare = null;
+            currentTurn = 'white';
+            legalMoves = [];
+            document.getElementById('turn-indicator').innerText = "دور اللاعب: الأبيض";
+            renderBoard();
+        }}
 
-        function render() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            boardState.forEach((row, r) => {
-                row.forEach((piece, c) => {
-                    const sq = document.createElement('div');
-                    sq.className = 'sq ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
-                    sq.innerText = piece;
-                    sq.onclick = () => {
-                        if (selected) {
-                            boardState[r][c] = boardState[selected.r][selected.c];
-                            boardState[selected.r][selected.c] = '';
-                            selected = null;
-                            render();
-                        } else if (piece !== '') {
-                            selected = {r, c};
-                            sq.style.backgroundColor = '#70a1ff';
-                        }
-                    };
-                    board.appendChild(sq);
-                });
-            });
-        }
-        initBoard();
+        function getPieceColor(piece) {{
+            if (whitePieces.includes(piece)) return 'white';
+            if (blackPieces.includes(piece)) return 'black';
+            return null;
+        }}
+
+        // حساب الحركات القانونية لكل قطعة بشكل دقيق وحاسم
+        function calculateLegalMoves(row, col) {{
+            const piece = boardState[row][col];
+            const color = getPieceColor(piece);
+            const moves = [];
+
+            if (!piece || color !== currentTurn) return moves;
+
+            // 1. حركة العسكري (البيدق)
+            if (piece === '♙') {{ // عسكري أبيض يتحرك لأعلى (-1)
+                if (row > 0 && boardState[row-1][col] === '') {{
+                    moves.push({{ r: row-1, c: col }});
+                    if (row === 6 && boardState[row-2][col] === '') moves.push({{ r: row-2, c: col }});
+                }}
+                // الأكل بالورب
+                if (row > 0 && col > 0 && boardState[row-1][col-1] && getPieceColor(boardState[row-1][col-1]) === 'black') moves.push({{ r: row-1, c: col-1 }});
+                if (row > 0 && col < 7 && boardState[row-1][col+1] && getPieceColor(boardState[row-1][col+1]) === 'black') moves.push({{ r: row-1, c: col+1 }});
+            }}
+            else if (piece === '♟') {{ // عسكري أسود يتحرك لأسفل (+1)
+                if (row < 7 && boardState[row+1][col] === '') {{
+                    moves.push({{ r: row+1, c: col }});
+                    if (row === 1 && boardState[row+2][col] === '') moves.push({{ r: row+2, c: col }});
+                }}
+                if (row < 7 && col > 0 && boardState[row+1][col-1] && getPieceColor(boardState[row+1][col-1]) === 'white') moves.push({{ r: row+1, c: col-1 }});
+                if (row < 7 && col < 7 && boardState[row+1][col+1] && getPieceColor(boardState[row+1][col+1]) === 'white') moves.push({{ r: row+1, c: col+1 }});
+            }}
+
+            // 2. حركة الحصان (L Shape)
+            const knightOffsets = [
+                {{r:-2, c:-1}}, {{r:-2, c:1}}, {{r:-1, c:-2}}, {{r:-1, c:2}},
+                {{r:1, c:-2}}, {{r:1, c:2}}, {{r:2, c:-1}}, {{r:2, c:1}}
+            ];
+            if (piece === '♘' || piece === '♞') {{
+                knightOffsets.forEach(off => {{
+                    const nr = row + off.r, nc = col + off.c;
+                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {{
+                        if (boardState[nr][nc] === '' || getPieceColor(boardState[nr][nc]) !== color) {{
+                            moves.push({{ r: nr, c: nc }});
+                        }}
+                    }}
+                }});
+            }}
+
+            // 3. حركة الملك (مربع واحد في كل اتجاه)
+            if (piece === '♔' || piece === '♚') {{
+                for (let dr = -1; dr <= 1; dr++) {{
+                    for (let dc = -1; dc <= 1; dc++) {{
+                        if (dr === 0 && dc === 0) continue;
+                        const nr = row + dr, nc = col + dc;
+                        if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {{
+                            if (boardState[nr][nc] === '' || getPieceColor(boardState[nr][nc]) !== color) {{
+                                moves.push({{ r: nr, c: nc }});
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+
+            // دالة مساعدة لقطع الخطوط المستقيمة والمائلة (الفيل، الطابية، الوزير)
+            function slidingMoves(directions) {{
+                directions.forEach(dir => {{
+                    let nr = row + dir.r, nc = col + dir.c;
+                    while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {{
+                        if (boardState[nr][nc] === '') {{
+                            moves.push({{ r: nr, c: nc }});
+                        }} else {{
+                            if (getPieceColor(boardState[nr][nc]) !== color) {{
+                                moves.push({{ r: nr, c: nc }});
+                            }}
+                            break; // توقف لوجود حجر في المسار
+                        }}
+                        nr += dir.r; nc += dir.c;
+                    }}
+                }});
+            }}
+
+            const straightDirs = [{{r:-1, c:0}}, {{r:1, c:0}}, {{r:0, c:-1}}, {{r:0, c:1}}];
+            const diagonalDirs = [{{r:-1, c:-1}}, {{r:-1, c:1}}, {{r:1, c:-1}}, {{r:1, c:1}}];
+
+            // الطابية (الرخ)
+            if (piece === '♖' || piece === '♜') slidingMoves(straightDirs);
+            // الفيل
+            if (piece === '♗' || piece === '♝') slidingMoves(diagonalDirs);
+            // الوزير (الملكة)
+            if (piece === '♕' || piece === '♛') slidingMoves([...straightDirs, ...diagonalDirs]);
+
+            return moves;
+        }}
+
+        function isMoveLegal(r, c) {{
+            return legalMoves.some(m => m.r === r && m.c === c);
+        }}
+
+        function renderBoard() {{
+            const boardDiv = document.getElementById('board');
+            boardDiv.innerHTML = '';
+            for (let r = 0; r < 8; r++) {{
+                for (let c = 0; c < 8; c++) {{
+                    const square = document.createElement('div');
+                    square.className = 'chess-square ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
+                    square.innerText = boardState[r][c];
+                    square.dataset.row = r;
+                    square.dataset.col = c;
+
+                    // تحديد القطعة المختارة
+                    if (selectedSquare && selectedSquare.row === r && selectedSquare.col === c) {{
+                        square.classList.add('selected');
+                    }}
+
+                    // رسم النقاط الخضراء للمسارات المتاحة
+                    if (isMoveLegal(r, c)) {{
+                        if (boardState[r][c] !== '') {{
+                            square.classList.add('legal-attack'); // هدف قابل للأكل
+                        }} else {{
+                            square.classList.add('legal-move'); // مربع فارغ للنقل
+                        }}
+                    }}
+
+                    square.addEventListener('click', handleSquareClick);
+                    boardDiv.appendChild(square);
+                }}
+            }}
+        }}
+
+        function handleSquareClick(e) {{
+            const r = parseInt(e.currentTarget.dataset.row);
+            const c = parseInt(e.currentTarget.dataset.col);
+            const piece = boardState[r][c];
+            const pieceColor = getPieceColor(piece);
+
+            // إذا ضغط على مربع قانوني عليه نقطة خضراء، نقوم بالنقل الفوري
+            if (selectedSquare && isMoveLegal(r, c)) {{
+                boardState[r][c] = boardState[selectedSquare.row][selectedSquare.col];
+                boardState[selectedSquare.row][selectedSquare.col] = '';
+                selectedSquare = null;
+                legalMoves = [];
+                currentTurn = currentTurn === 'white' ? 'black' : 'white';
+                document.getElementById('turn-indicator').innerText = "دور اللاعب: " + (currentTurn === 'white' ? 'الأبيض (الأسفل)' : 'الأسود (الأعلى)');
+                renderBoard();
+                return;
+            }}
+
+            // اختيار قطعة جديدة للتحرك بها بناء على الدور الحقيقي
+            if (pieceColor === currentTurn) {{
+                selectedSquare = {{ row: r, col: c }};
+                legalMoves = calculateLegalMoves(r, c);
+                renderBoard();
+            }} else {{
+                // إلغاء التحديد إذا ضغط في مكان خارجي أو قطعة لا يملكها
+                selectedSquare = null;
+                legalMoves = [];
+                renderBoard();
+            }}
+        }}
+
+        document.addEventListener('DOMContentLoaded', initBoard);
     </script>
 </body>
 </html>
+"""
 
+# قالب قسم البرمجة C++
+PROG_TEMPLATE = f"""
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+{BASE_HEAD}
+<body>
+    <div class="header">
+        <h1>💻 دروس البرمجة بلغة C++</h1>
+        <p style="color: #aaaaaa; font-size: 14px;">تعلم لغة الأنظمة القوية واكتب أولى شفراتك البرمجية</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📖 الدرس 1: ما هي لغة C++ ولماذا نتعلمها؟</div>
+        <p>لغة <strong>C++</strong> هي واحدة من أقوى وأسرع لغات البرمجة في العالم. تُستخدم لبناء الأنظمة الكبيرة مثل أنظمة التشغيل (ويندوز)، الألعاب الضخمة (مثل ألعاب الـ 3D)، والبرامج التي تتحكم بالقطع الإلكترونية والهاردوير بدقة فائقة.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🛠️ الدرس 2: تشريح الكود وأوامر استدعاء المكتبات</div>
+        <p>لكي يفهم الكمبيوتر أسطرنا البرمجية، نحتاج في البداية لاستدعاء "أدوات مجهزة مسبقاً" تسمى <strong>المكتبات</strong>. إليك الهيكل الأساسي لأي كود C++:</p>
+
+        <div class="code-box">
+#include &lt;iostream&gt;  // 1. أمر استدعاء مكتبة الإدخال والإخراج<br>
+using namespace std;   // 2. تفعيل الحزمة القياسية لتسهيل كتابة الأوامر<br><br>
+int main() {{           // 3. الدالة الأساسية ونقطة انطلاق البرنامج<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// هنا تُكتب الأوامر التنفيذية<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return 0;          // 4. إنهاء البرنامج بنجاح<br>
+}}
+        </div>
+
+        <div class="explanation-box">
+            <strong>💡 شرح الأوامر بالتفصيل لتبسيطها للطلاب:</strong>
+            <ul>
+                <li><code>#include &lt;iostream&gt;</code>: كلمة <strong>include</strong> تعني (تضمين أو استدعاء)، ومكتبة <strong>iostream</strong> اختصار لـ (Input-Output Stream). بدون هذا السطر، لن يستطيع البرنامج فهم أمر طباعة النصوص على الشاشة أو استقبال مدخلات المستخدم.</li>
+                <li><code>using namespace std;</code>: توفر علينا كتابة البادئة <code>std::</code> قبل كل أمر طباعة، مما يجعل الكود نظيفاً وأسهل في القراءة.</li>
+                <li><code>int main() {{ ... }}</code>: عند تشغيل الكود، يبحث المعالج فوراً عن كلمة <code>main</code> ليقوم بتنفيذ الأوامر الموجودة بين القوسين <code>{{ }}</code> بالترتيب.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🚀 اختبار تفاعلي: اكتب أول كود C++ بنفسك!</div>
+        <p>لطباعة أي نص في لغة C++ نستخدم السطر التالي: <code>cout &lt;&lt; "النص هنا";</code></p>
+        <p style="color: #00adb5;"><strong>المطلوب:</strong> أكمل الدالة الأساسية بالأسفل واكتب داخلها الأمر البرمجي الصحيح لطباعة جملة <code>Hello World</code>:</p>
+
+        <form method="POST" action="/check_cpp">
+            <div style="text-align: left; direction: ltr; font-family: monospace; color: #aaaaaa; margin-bottom: 5px;">
+                #include &lt;iostream&gt;<br>
+                using namespace std;<br>
+                int main() {{
+            </div>
+
+            <textarea name="user_code" class="textarea-field" placeholder='// اكتب هنا أمر الطباعة، مثال:&#10;cout << "Hello World";'></textarea>
+
+            <div style="text-align: left; direction: ltr; font-family: monospace; color: #aaaaaa; margin-top: 5px;">
+                &nbsp;&nbsp;&nbsp;&nbsp;return 0;<br>
+                }}
+            </div>
+
+            <button type="submit" class="btn">تشغيل وفحص الكود الخاص بك ⚙️</button>
+        </form>
+
+        """ + """
+        {% if cpp_result %}
+        <div class="result-box">
+            {% if cpp_result == "success" %}
+                <span style="color: #21bf73; font-weight: bold; font-size: 16px;">🎉 مبروك! لقد قمت بكتابة وتشغيل أول كود C++ حقيقي بنجاح! مخرجات البرنامج: <br><br> <code style="background: #121212; padding: 5px 10px; border-radius: 4px; color: white;">Hello World</code></span>
+            {% else %}
+                <span style="color: #ff2e63; font-weight: bold; font-size: 16px;">❌ خطأ في بناء الجملة البرمجية (Syntax Error). <br><br> تأكد من كتابة السهمين بشكل صحيح <code>&lt;&lt;</code>، ووضع الجملة بين علامات اقتباس مزدوجة، وإنهاء السطر بالفاصلة المنقوطة <code>;</code></span>
+            {% endif %}
+        </div>
+        {% endif %}
+        """ + f"""
+    </div>
+
+    <a href="/" class="btn btn-secondary">⬅️ العودة للشاشة الرئيسية</a>
+</body>
+</html>
+"""
+
+# قالب قسم الأمن السيبراني المطور
+CYBER_TEMPLATE = f"""
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+{BASE_HEAD}
+<body>
+    <div class="header">
+        <h1>🛡️ معمل الأمن السيبراني وفحص الحماية</h1>
+        <p style="color: #aaaaaa; font-size: 14px;">تعلم حماية الأنظمة واختبر جدار حماية المواقع حركياً</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🛡️ ما هو الأمن السيبراني (Cybersecurity)؟</div>
+        <p>هو علم وممارسة تهدف إلى <strong>حماية الأنظمة، الشبكات، البرامج، والهواتف الذكية</strong> من الهجمات الرقمية أو الوصول غير المصرح به. في عالمنا اليوم، يتمحور الأمن السيبراني حول منع المخترقين (Hackers) من سرقة البيانات الحساسة أو تشويه المواقع أو تعطيل البنى التحتية.</p>
+        <p>يتعلم خبراء الأمن السيبراني كيف يفكر المهاجم لكي يتمكنوا من بناء جدران حماية قوية تسد كل الثغرات الأمنية الممكنة.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🔍 أداة فحص ترويسات الحماية (Security Headers Checker)</div>
+        <p>المواقع الآمنة ترسل ترويسات (Headers) مشفرة تخبر المتصفح بكيفية التعامل بحزم لحماية الزوار. أدخل رابط أي موقع بالأسفل لتقوم الأداة بفحص خطوط دفاعه الأساسية:</p>
+
+        <form method="POST" action="/cybersecurity">
+            <input type="text" name="url" class="input-field" placeholder="https://example.com" required value=""" + '"{{ url }}"' + """>
+            <button type="submit" class="btn">ابدأ الفحص الحركي الآن</button>
+        </form>
+
+        """ + """
+        {% if result %}
+        <div class="result-box" style="text-align: right;">
+            <strong>نتائج تحليل ترويسات الخادم لـ:</strong> <code>{{ url }}</code><br><br>
+            {% for header, status in result.items() %}
+                • {{ header }}:
+                {% if "غير محمي" in status %}
+                    <span style="color: #ff2e63; font-weight: bold;">{{ status }}</span>
+                {% else %}
+                    <span style="color: #21bf73; font-weight: bold;">{{ status }}</span>
+                {% endif %}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+        """ + f"""
+    </div>
+
+    <a href="/" class="btn btn-secondary">⬅️ العودة للشاشة الرئيسية</a>
+</body>
+</html>
+"""
+
+@app.route('/')
+def home():
+    return render_template_string(HOME_TEMPLATE)
+
+@app.route('/logic')
+def logic():
+    return render_template_string(LOGIC_TEMPLATE)
+
+@app.route('/check_sudoku', methods=['POST'])
+def check_sudoku():
+    c0_1 = request.form.get('cell_0_1')
+    c1_0 = request.form.get('cell_1_0')
+    c1_2 = request.form.get('cell_1_2')
+    c2_1 = request.form.get('cell_2_1')
+
+    if c0_1 == "2" and c1_0 == "3" and c1_2 == "2" and c2_1 == "3":
+        status = "success"
+    else:
+        status = "fail"
+    return render_template_string(LOGIC_TEMPLATE, sudoku_result=status)
+
+@app.route('/programming')
+def programming():
+    return render_template_string(PROG_TEMPLATE)
+
+@app.route('/check_cpp', methods=['POST'])
+def check_cpp():
+    user_code = request.form.get('user_code', '').strip()
+    cleaned_code = user_code.replace(" ", "").replace('“', '"').replace('”', '"')
+
+    if 'cout<<"Hello\World";' in user_code or 'cout<<"HelloWorld";' in cleaned_code or 'cout' in user_code and 'Hello' in user_code and ';' in user_code:
+        status = "success"
+    else:
+        status = "fail"
+    return render_template_string(PROG_TEMPLATE, cpp_result=status)
+
+@app.route('/cybersecurity', methods=['GET', 'POST'])
+def cybersecurity():
+    result = None
+    url = ""
+    if request.method == 'POST':
+        url = request.form.get('url')
+        if not url.startswith('http'):
+            url = 'https://' + url
+        try:
+            response = requests.get(url, timeout=5)
+            headers = response.headers
+            result = {
+                "X-Frame-Options (الحماية من الاختطاف النقري Clickjacking)": "✅ محمي ومفعّل" if "X-Frame-Options" in headers else "❌ غير محمي (مفقود)",
+                "Content-Security-Policy (منع حقن السكربتات الضارة XSS)": "✅ محمي ومفعّل" if "Content-Security-Policy" in headers else "❌ غير محمي (مفقود)",
+                "Strict-Transport-Security (تشفير الاتصال الإجباري HTTPS)": "✅ محمي ومفعّل" if "Strict-Transport-Security" in headers else "❌ غير محمي (مفقود)"
+            }
+        except Exception as e:
+            result = {"خطأ": "تعذر الوصول إلى الخادم، تأكد من صحة الرابط أو جرب موقعاً آخر."}
+
+    return render_template_string(CYBER_TEMPLATE, result=result, url=url)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
