@@ -1,57 +1,4 @@
-from flask import Flask, render_template_string, request
-import requests
 
-app = Flask(__name__)
-
-# التصميم البصري المشترك لجميع الصفحات
-BASE_HEAD = """
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المبتكر التقني</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 15px;
-            text-align: center;
-        }
-        .header {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border-bottom: 4px solid #00adb5;
-        }
-        h1 { color: #00adb5; margin: 0; font-size: 24px; }
-        .card {
-            background-color: #1e1e1e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid #2d2d2d;
-            text-align: right;
-        }
-        .card-title {
-            color: #00adb5;
-            font-size: 18px;
-            margin-top: 0;
-            border-bottom: 1px solid #2d2d2d;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-        .code-box {
-            background-color: #252830;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: monospace;
-            direction: ltr;
-            text-align: left;
-            overflow-x: auto;
-            color: #f8f8f2;
-            border-left: 4px solid #00adb5;
             line-height: 1.6;
         }
         .explanation-box {
@@ -435,17 +382,7 @@ LOGIC_TEMPLATE = f"""
             const piece = boardState[r][c];
             const pieceColor = getPieceColor(piece);
 
-            // إذا ضغط على مربع قانوني عليه نقطة خضراء، نقوم بالنقل الفوري
-            if (selectedSquare && isMoveLegal(r, c)) {{
-                boardState[r][c] = boardState[selectedSquare.row][selectedSquare.col];
-                boardState[selectedSquare.row][selectedSquare.col] = '';
-                selectedSquare = null;
-                legalMoves = [];
-                currentTurn = currentTurn === 'white' ? 'black' : 'white';
-                document.getElementById('turn-indicator').innerText = "دور اللاعب: " + (currentTurn === 'white' ? 'الأبيض (الأسفل)' : 'الأسود (الأعلى)');
-                renderBoard();
-                return;
-            }}
+            // إذا ضغط على مربع 
 
             // اختيار قطعة جديدة للتحرك بها بناء على الدور الحقيقي
             if (pieceColor === currentTurn) {{
@@ -637,19 +574,3 @@ def cybersecurity():
         url = request.form.get('url')
         if not url.startswith('http'):
             url = 'https://' + url
-        try:
-            response = requests.get(url, timeout=5)
-            headers = response.headers
-            result = {
-                "X-Frame-Options (الحماية من الاختطاف النقري Clickjacking)": "✅ محمي ومفعّل" if "X-Frame-Options" in headers else "❌ غير محمي (مفقود)",
-                "Content-Security-Policy (منع حقن السكربتات الضارة XSS)": "✅ محمي ومفعّل" if "Content-Security-Policy" in headers else "❌ غير محمي (مفقود)",
-                "Strict-Transport-Security (تشفير الاتصال الإجباري HTTPS)": "✅ محمي ومفعّل" if "Strict-Transport-Security" in headers else "❌ غير محمي (مفقود)"
-            }
-        except Exception as e:
-            result = {"خطأ": "تعذر الوصول إلى الخادم، تأكد من صحة الرابط أو جرب موقعاً آخر."}
-            
-    return render_template_string(CYBER_TEMPLATE, result=result, url=url)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
