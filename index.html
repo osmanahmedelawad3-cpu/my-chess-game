@@ -1,213 +1,112 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!-- =========================
+تعديلات قسم الألعاب + C++
+========================= -->
 
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>OSMAN WD ELAWAD PLATFORM</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-background:#0f0f0f;
-color:white;
-font-family:Tahoma;
-padding:15px;
-}
-
-.header{
-background:#1b1b1b;
-padding:25px;
-border-radius:20px;
-text-align:center;
-border-bottom:5px solid #00d2d3;
-margin-bottom:25px;
-}
-
-.header h1{
-color:#00d2d3;
-font-size:35px;
-}
-
-.header p{
-color:#aaa;
-margin-top:10px;
-}
-
-.section{
-background:#1b1b1b;
-padding:20px;
-border-radius:20px;
-margin-bottom:25px;
-border:1px solid #333;
-}
-
-.section h2{
-color:#00d2d3;
-margin-bottom:15px;
-}
-
-.btn{
-background:#00adb5;
-color:white;
-padding:12px 20px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-margin-top:10px;
-font-weight:bold;
-}
-
-input,textarea{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-border:none;
-background:#222;
-color:white;
-font-size:16px;
-}
-
-textarea{
-height:120px;
-}
-
-.result{
-background:#222;
-padding:15px;
-border-radius:10px;
-margin-top:15px;
-}
-
-.hidden{
-display:none;
-}
-
-/* الشطرنج */
-
-.chess-container{
-display:grid;
-grid-template-columns:repeat(8,1fr);
-max-width:500px;
-margin:20px auto;
-aspect-ratio:1/1;
-border:5px solid #444;
-}
-
-.square{
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:35px;
-cursor:pointer;
-position:relative;
-}
-
-.light{
-background:#f0d9b5;
-color:black;
-}
-
-.dark{
-background:#b58863;
-color:black;
-}
-
-.selected{
-background:#70a1ff !important;
-}
-
-.legal::after{
-content:"";
-width:14px;
-height:14px;
-background:#2ed573;
-border-radius:50%;
-position:absolute;
-}
-
-.footer{
-text-align:center;
-padding:30px;
-margin-top:40px;
-background:#1b1b1b;
-border-radius:20px;
-border-top:5px solid #00d2d3;
-}
-
-.logo{
-font-size:30px;
-font-weight:bold;
-color:#00d2d3;
-text-shadow:0 0 10px #00d2d3;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="header">
-<h1>🚀 منصة المبتكر التقني</h1>
-<p>
-منصة تعليمية متكاملة للألعاب والبرمجة والأمن السيبراني
-</p>
-</div>
-
-<!-- القسم الأول -->
+<!-- قسم الألعاب -->
 <div class="section">
 
 <h2>🎮 قسم الألعاب</h2>
 
-<h3>♟️ لعبة الشطرنج</h3>
+<!-- الشطرنج -->
+<h3>♟️ لعبة الشطرنج الاحترافية</h3>
+
+<p>
+اضغط على أي قطعة لرؤية الحركات القانونية بالنقاط الخضراء
+</p>
 
 <div class="chess-container" id="board"></div>
+
+<div id="status"
+style="margin-top:15px;
+font-weight:bold;
+color:#00d2d3;">
+دور الأبيض
+</div>
 
 <button class="btn" onclick="initBoard()">
 إعادة اللعبة
 </button>
 
-<hr style="margin:25px 0;border:1px solid #333;">
+<hr style="margin:30px 0;border:1px solid #333;">
 
-<h3>🧩 لعبة السودوكو</h3>
+<!-- اكس او -->
+<h3>⭕❌ لعبة اكس او</h3>
 
-<p>أدخل الأرقام الصحيحة:</p>
-
-<input type="number" id="s1" placeholder="الخانة 1">
-<input type="number" id="s2" placeholder="الخانة 2">
-
-<button class="btn" onclick="checkSudoku()">
-تحقق من الحل
-</button>
-
-<div class="result" id="sudokuResult"></div>
+<div id="xoBoard"
+style="
+display:grid;
+grid-template-columns:repeat(3,100px);
+gap:5px;
+justify-content:center;
+margin-top:20px;
+">
 
 </div>
 
-<!-- القسم الثاني -->
+<div id="xoStatus"
+style="
+margin-top:15px;
+font-weight:bold;
+color:#00d2d3;
+">
+دور X
+</div>
+
+<button class="btn" onclick="initXO()">
+إعادة لعبة X/O
+</button>
+
+</div>
+
+<!-- =========================
+قسم C++
+========================= -->
+
 <div class="section">
 
-<h2>💻 تعلم C++</h2>
+<h2>💻 تعلم لغة C++</h2>
 
 <p>
-لغة C++ من أقوى لغات البرمجة وتستخدم في الألعاب والأنظمة.
+لغة C++ تعتبر من أقوى لغات البرمجة في العالم،
+وتستخدم في تطوير الألعاب، أنظمة التشغيل،
+الذكاء الاصطناعي، والبرامج السريعة.
 </p>
 
 <br>
 
-<h3>📖 كود أولي:</h3>
+<h3>📚 ما هي المكتبات؟</h3>
+
+<p>
+المكتبات في C++ هي ملفات جاهزة تحتوي على
+أوامر ووظائف تساعد المبرمج.
+</p>
+
+<br>
+
+<p>
+مثلاً مكتبة:
+</p>
 
 <div class="result">
 <pre>
 #include &lt;iostream&gt;
+</pre>
+</div>
+
+<p>
+هذه المكتبة مسؤولة عن الإدخال والإخراج،
+أي الطباعة على الشاشة واستقبال البيانات.
+</p>
+
+<br>
+
+<h3>📖 شرح أول كود</h3>
+
+<div class="result">
+
+<pre>
+#include &lt;iostream&gt;
+
 using namespace std;
 
 int main(){
@@ -215,93 +114,66 @@ int main(){
 cout &lt;&lt; "Hello World";
 
 return 0;
+
 }
 </pre>
+
 </div>
 
-<h3 style="margin-top:20px;">
-🧪 جرّب كودك:
-</h3>
+<br>
 
-<textarea id="cppCode"></textarea>
+<p>
+🔹 include تستدعي المكتبة
+<br><br>
+🔹 main هي بداية البرنامج
+<br><br>
+🔹 cout تستخدم للطباعة
+<br><br>
+🔹 return 0 تعني انتهاء البرنامج
+</p>
+
+<br>
+
+<h3>🧪 جرّب كودك</h3>
+
+<textarea id="cppCode"
+placeholder='اكتب كود C++ هنا'></textarea>
 
 <button class="btn" onclick="runCpp()">
-فحص الكود
+تشغيل الكود
 </button>
 
 <div class="result" id="cppResult"></div>
 
 </div>
 
-<!-- القسم الثالث -->
-<div class="section">
+<!-- =========================
+قسم المترجم
+========================= -->
 
-<h2>🛡️ الأمن السيبراني</h2>
-
-<p>
-أدخل رابط الموقع لفحص الحماية الأساسية
-</p>
-
-<input type="text" id="siteUrl" placeholder="https://example.com">
-
-<button class="btn" onclick="scanSite()">
-فحص الموقع
-</button>
-
-<div class="result" id="scanResult"></div>
-
-</div>
-
-<!-- القسم الرابع -->
 <div class="section">
 
 <h2>🌍 المترجم</h2>
 
-<input type="text" id="translateInput"
-placeholder="أدخل كلمة بالعربي أو الإنجليزي">
+<input type="text"
+id="translateInput"
+placeholder="ادخل الكلمة المراد ترجمتها">
 
-<button class="btn" onclick="translateWord()">
+<button class="btn"
+onclick="translateWord()">
 ترجمة
 </button>
 
-<div class="result" id="translateResult"></div>
-
-</div>
-
-<!-- القسم الخامس -->
-<div class="section">
-
-<h2>🧠 حل المشاكل البرمجية</h2>
-
-<textarea id="problemInput"
-placeholder="اكتب المشكلة البرمجية هنا"></textarea>
-
-<button class="btn" onclick="solveProblem()">
-إظهار الحل
-</button>
-
-<div class="result" id="problemResult"></div>
-
-</div>
-
-<!-- الشعار -->
-<div class="footer">
-
-<div class="logo">
-OSMAN WD ELAWAD
-</div>
-
-<p style="margin-top:10px;color:#aaa;">
-Developer & Cyber Security
-</p>
+<div class="result"
+id="translateResult"></div>
 
 </div>
 
 <script>
 
-/* =====================
-الشطرنج
-===================== */
+/* =========================
+الشطرنج الاحترافي
+========================= */
 
 const initialBoard = [
 ['♜','♞','♝','♛','♚','♝','♞','♜'],
@@ -314,19 +186,46 @@ const initialBoard = [
 ['♖','♘','♗','♕','♔','♗','♘','♖']
 ];
 
+const whitePieces =
+['♙','♖','♘','♗','♕','♔'];
+
+const blackPieces =
+['♟','♜','♞','♝','♛','♚'];
+
 let boardState = [];
 let selected = null;
+let currentTurn = "white";
+let legalMoves = [];
 
 function initBoard(){
 
-boardState = JSON.parse(JSON.stringify(initialBoard));
+boardState =
+JSON.parse(JSON.stringify(initialBoard));
+
+selected = null;
+currentTurn = "white";
+legalMoves = [];
 
 renderBoard();
+
+}
+
+function getColor(piece){
+
+if(whitePieces.includes(piece))
+return "white";
+
+if(blackPieces.includes(piece))
+return "black";
+
+return null;
+
 }
 
 function renderBoard(){
 
-const board = document.getElementById("board");
+const board =
+document.getElementById("board");
 
 board.innerHTML = "";
 
@@ -334,192 +233,417 @@ for(let r=0;r<8;r++){
 
 for(let c=0;c<8;c++){
 
-const square = document.createElement("div");
+const square =
+document.createElement("div");
 
 square.className =
-"square " + (((r+c)%2===0) ? "light":"dark");
+"square " +
+(((r+c)%2===0)
+? "light"
+: "dark");
 
-square.innerText = boardState[r][c];
+square.innerText =
+boardState[r][c];
 
-square.onclick = ()=>movePiece(r,c);
+if(selected &&
+selected.r===r &&
+selected.c===c){
+
+square.classList.add("selected");
+
+}
+
+if(legalMoves.some(
+m=>m.r===r && m.c===c
+)){
+
+square.classList.add("legal");
+
+}
+
+square.onclick =
+()=>handleClick(r,c);
 
 board.appendChild(square);
 
 }
 }
+
+checkKingDanger();
+
 }
 
-function movePiece(r,c){
+function handleClick(r,c){
 
-if(selected){
+const piece =
+boardState[r][c];
+
+const color =
+getColor(piece);
+
+if(selected &&
+legalMoves.some(
+m=>m.r===r && m.c===c
+)){
 
 boardState[r][c] =
 boardState[selected.r][selected.c];
 
-boardState[selected.r][selected.c] = '';
+boardState[selected.r][selected.c]
+= '';
 
 selected = null;
 
+legalMoves = [];
+
+currentTurn =
+currentTurn==="white"
+? "black"
+: "white";
+
+document.getElementById("status")
+.innerHTML =
+currentTurn==="white"
+? "دور الأبيض"
+: "دور الأسود";
+
 renderBoard();
 
-}else{
+return;
 
-if(boardState[r][c] !== ''){
+}
+
+if(color===currentTurn){
 
 selected = {r,c};
 
+legalMoves =
+calculateMoves(r,c);
+
+renderBoard();
+
 }
+
 }
+
+function calculateMoves(r,c){
+
+const piece =
+boardState[r][c];
+
+const color =
+getColor(piece);
+
+const moves = [];
+
+function addMove(nr,nc){
+
+if(nr<0 || nr>7 ||
+nc<0 || nc>7) return;
+
+if(boardState[nr][nc]==='' ||
+getColor(boardState[nr][nc])!==color){
+
+moves.push({r:nr,c:nc});
+
 }
+
+}
+
+/* البيدق */
+
+if(piece==='♙'){
+
+addMove(r-1,c);
+
+if(r===6 &&
+boardState[r-1][c]==='')
+addMove(r-2,c);
+
+}
+
+if(piece==='♟'){
+
+addMove(r+1,c);
+
+if(r===1 &&
+boardState[r+1][c]==='')
+addMove(r+2,c);
+
+}
+
+/* الحصان */
+
+if(piece==='♘' ||
+piece==='♞'){
+
+[
+[-2,-1],[-2,1],
+[-1,-2],[-1,2],
+[1,-2],[1,2],
+[2,-1],[2,1]
+].forEach(m=>{
+
+addMove(r+m[0],c+m[1]);
+
+});
+
+}
+
+/* الملك */
+
+if(piece==='♔' ||
+piece==='♚'){
+
+for(let dr=-1;dr<=1;dr++){
+
+for(let dc=-1;dc<=1;dc++){
+
+if(dr!==0 || dc!==0){
+
+addMove(r+dr,c+dc);
+
+}
+
+}
+
+}
+
+}
+
+/* الرخ */
+
+if(piece==='♖' ||
+piece==='♜'){
+
+slideMoves([
+[-1,0],[1,0],
+[0,-1],[0,1]
+]);
+
+}
+
+/* الفيل */
+
+if(piece==='♗' ||
+piece==='♝'){
+
+slideMoves([
+[-1,-1],[-1,1],
+[1,-1],[1,1]
+]);
+
+}
+
+/* الوزير */
+
+if(piece==='♕' ||
+piece==='♛'){
+
+slideMoves([
+[-1,0],[1,0],
+[0,-1],[0,1],
+[-1,-1],[-1,1],
+[1,-1],[1,1]
+]);
+
+}
+
+function slideMoves(dirs){
+
+dirs.forEach(d=>{
+
+let nr=r+d[0];
+let nc=c+d[1];
+
+while(
+nr>=0 && nr<8 &&
+nc>=0 && nc<8
+){
+
+if(boardState[nr][nc]===''){
+
+moves.push({r:nr,c:nc});
+
+}else{
+
+if(getColor(
+boardState[nr][nc]
+)!==color){
+
+moves.push({r:nr,c:nc});
+
+}
+
+break;
+
+}
+
+nr+=d[0];
+nc+=d[1];
+
+}
+
+});
+
+}
+
+return moves;
+
+}
+
+/* تحذير كش ملك */
+
+function checkKingDanger(){
+
+let whiteKing = false;
+let blackKing = false;
+
+for(let row of boardState){
+
+if(row.includes('♔'))
+whiteKing = true;
+
+if(row.includes('♚'))
+blackKing = true;
+
+}
+
+if(!whiteKing){
+
+document.getElementById("status")
+.innerHTML =
+"🔴 كش ملك - الأسود فاز";
+
+document.getElementById("status")
+.style.color = "red";
+
+}
+
+if(!blackKing){
+
+document.getElementById("status")
+.innerHTML =
+"🔴 كش ملك - الأبيض فاز";
+
+document.getElementById("status")
+.style.color = "red";
+
+}
+
+}
+
+/* تشغيل الشطرنج */
 
 initBoard();
 
-/* =====================
-السودوكو
-===================== */
+/* =========================
+X O GAME
+========================= */
 
-function checkSudoku(){
+let xoBoard = [];
+let xoTurn = "X";
 
-const s1 =
-document.getElementById("s1").value;
+function initXO(){
 
-const s2 =
-document.getElementById("s2").value;
+xoBoard =
+['','','',
+ '','','',
+ '','',''];
 
-if(s1 == 2 && s2 == 3){
+xoTurn = "X";
 
-document.getElementById("sudokuResult")
+renderXO();
+
+}
+
+function renderXO(){
+
+const board =
+document.getElementById("xoBoard");
+
+board.innerHTML = "";
+
+xoBoard.forEach((cell,i)=>{
+
+const div =
+document.createElement("div");
+
+div.style.width = "100px";
+div.style.height = "100px";
+div.style.background = "#222";
+div.style.display = "flex";
+div.style.alignItems = "center";
+div.style.justifyContent = "center";
+div.style.fontSize = "40px";
+div.style.cursor = "pointer";
+div.style.borderRadius = "10px";
+
+div.innerHTML = cell;
+
+div.onclick = ()=>playXO(i);
+
+board.appendChild(div);
+
+});
+
+}
+
+function playXO(i){
+
+if(xoBoard[i]!=="") return;
+
+xoBoard[i] = xoTurn;
+
+xoTurn =
+xoTurn==="X"
+? "O"
+: "X";
+
+renderXO();
+
+checkWinner();
+
+}
+
+function checkWinner(){
+
+const wins = [
+
+[0,1,2],
+[3,4,5],
+[6,7,8],
+
+[0,3,6],
+[1,4,7],
+[2,5,8],
+
+[0,4,8],
+[2,4,6]
+
+];
+
+for(let w of wins){
+
+const [a,b,c] = w;
+
+if(
+xoBoard[a] &&
+xoBoard[a]===xoBoard[b] &&
+xoBoard[a]===xoBoard[c]
+){
+
+document.getElementById("xoStatus")
 .innerHTML =
-"✅ الحل صحيح";
-
-}else{
-
-document.getElementById("sudokuResult")
-.innerHTML =
-"❌ الحل خطأ";
-
-}
-}
-
-/* =====================
-C++
-===================== */
-
-function runCpp(){
-
-const code =
-document.getElementById("cppCode").value;
-
-if(code.includes("cout")){
-
-document.getElementById("cppResult")
-.innerHTML =
-"✅ الكود صحيح تقريباً";
-
-}else{
-
-document.getElementById("cppResult")
-.innerHTML =
-"❌ تأكد من كتابة cout";
-
-}
-}
-
-/* =====================
-فحص المواقع
-===================== */
-
-function scanSite(){
-
-const url =
-document.getElementById("siteUrl").value;
-
-document.getElementById("scanResult")
-.innerHTML =
-`
-✅ تم فحص الموقع: ${url}
-<br><br>
-🔒 HTTPS: جيد
-<br>
-🛡️ الحماية الأساسية: موجودة
-`;
+"🏆 الفائز: " +
+xoBoard[a];
 
 }
 
-/* =====================
-المترجم
-===================== */
-
-function translateWord(){
-
-const word =
-document.getElementById("translateInput")
-.value.toLowerCase();
-
-let result = "";
-
-const dictionary = {
-
-"hello":"مرحبا",
-"world":"العالم",
-"car":"سيارة",
-"book":"كتاب",
-"مرحبا":"hello",
-"كتاب":"book",
-"سيارة":"car"
-
-};
-
-if(dictionary[word]){
-
-result = dictionary[word];
-
-}else{
-
-result = "❌ الكلمة غير موجودة";
+}
 
 }
 
-document.getElementById("translateResult")
-.innerHTML = result;
+initXO();
 
-}
-
-/* =====================
-حل المشاكل البرمجية
-===================== */
-
-function solveProblem(){
-
-const text =
-document.getElementById("problemInput")
-.value;
-
-let answer = "";
-
-if(text.includes("cout")){
-
-answer =
-"💡 المشكلة غالباً أنك نسيت include iostream";
-
-}else if(text.includes("loop")){
-
-answer =
-"💡 تأكد من شرط الحلقة حتى لا تصبح infinite loop";
-
-}else{
-
-answer =
-"✅ حاول مراجعة Syntax أو الأقواس";
-
-}
-
-document.getElementById("problemResult")
-.innerHTML = answer;
-
-}
-
-</script>
-
-</body>
-    </html>
+    </script>
